@@ -145,8 +145,8 @@ const AddItemForm = ({ onAddItem }) => {
           <input
             id="fileInput"
             type="file"
-            accept="image/*"
-            capture="environment" // Optional: specify "environment" or "user"
+            {/* accept="image/*"
+            capture="environment" // Optional: specify "environment" or "user" */}
             className="form-control"
             onChange={handleFileChange}
           />
