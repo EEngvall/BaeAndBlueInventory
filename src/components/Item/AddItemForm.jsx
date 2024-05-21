@@ -47,7 +47,7 @@ const AddItemForm = ({ onAddItem }) => {
           {
             fileName,
             fileType,
-          }
+          },
         );
 
         const { url } = response.data;
@@ -91,7 +91,7 @@ const AddItemForm = ({ onAddItem }) => {
     try {
       const response = await axios.post(
         "https://server.baeandblue.com/api/items",
-        itemToAdd
+        itemToAdd,
       );
       onAddItem(response.data);
       setNewItem({
@@ -145,8 +145,6 @@ const AddItemForm = ({ onAddItem }) => {
           <input
             id="fileInput"
             type="file"
-            {/* accept="image/*"
-            capture="environment" // Optional: specify "environment" or "user" */}
             className="form-control"
             onChange={handleFileChange}
           />
