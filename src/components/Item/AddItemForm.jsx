@@ -14,44 +14,17 @@ const AddItemForm = ({ onAddItem }) => {
     inventoryLocation: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
 
   const handleChange = (event) => {
     setNewItem({ ...newItem, [event.target.name]: event.target.value });
   };
 
-  const handleFileChange = async (event) => {
+  const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setIsUploading(true);
-      const fileName = `${Date.now()}_${file.name}`;
-      const fileType = file.type;
-
-      try {
-        // Request presigned URL from the server
-        const response = await axios.post(
-          "https://server.baeandblue.com/generate-presigned-url",
-          {
-            fileName,
-            fileType,
-          },
-        );
-
-        const { url } = response.data;
-
-        // Upload the file to S3 using the presigned URL
-        await axios.put(url, file, {
-          headers: {
-            "Content-Type": fileType,
-          },
-        });
-
-        setNewItem({ ...newItem, imageUrl: url.split("?")[0] }); // Use the URL without query parameters
-      } catch (error) {
-        console.error("Error uploading file:", error);
-      } finally {
-        setIsUploading(false);
-      }
+      setSelectedFile(file);
     }
   };
 
@@ -61,9 +34,42 @@ const AddItemForm = ({ onAddItem }) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
 
+    let imageUrl = newItem.imageUrl || "NULL";
+    if (selectedFile) {
+      setIsUploading(true);
+      const fileName = `${Date.now()}_${selectedFile.name}`;
+      const fileType = selectedFile.type;
+
+      try {
+        // Request presigned URL from the server
+        const response = await axios.post(
+          "https://server.baeandblue.com/generate-presigned-url",
+          {
+            fileName,
+            fileType,
+          }
+        );
+
+        const { url } = response.data;
+
+        // Upload the file to S3 using the presigned URL
+        await axios.put(url, selectedFile, {
+          headers: {
+            "Content-Type": fileType,
+          },
+        });
+
+        imageUrl = url.split("?")[0]; // Use the URL without query parameters
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      } finally {
+        setIsUploading(false);
+      }
+    }
+
     const itemToAdd = {
       name: newItem.name || "NULL",
-      imageUrl: newItem.imageUrl || "NULL",
+      imageUrl: imageUrl,
       associatedEventID: newItem.associatedEventID
         ? newItem.associatedEventID
             .split(",")
@@ -85,7 +91,7 @@ const AddItemForm = ({ onAddItem }) => {
     try {
       const response = await axios.post(
         "https://server.baeandblue.com/api/items",
-        itemToAdd,
+        itemToAdd
       );
       onAddItem(response.data);
       setNewItem({
@@ -99,6 +105,7 @@ const AddItemForm = ({ onAddItem }) => {
         replacedCount: "",
         inventoryLocation: "",
       });
+      setSelectedFile(null);
     } catch (error) {
       console.error("Error adding item:", error);
     } finally {
@@ -138,9 +145,10 @@ const AddItemForm = ({ onAddItem }) => {
           <input
             id="fileInput"
             type="file"
+            accept="image/*"
+            capture="environment" // Optional: specify "environment" or "user"
             className="form-control"
             onChange={handleFileChange}
-            disabled={isUploading}
           />
           {isUploading && <p>Uploading...</p>}
         </div>

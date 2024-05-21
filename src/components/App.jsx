@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import InventoryList from "../components/InventoryList/InventoryList";
 import Navbar from "../components/common/Navbar";
 import Home from "../components/common/Home"; // Make sure this import is correct
-
 import "bootstrap/dist/css/bootstrap.min.css";
 // Other imports
 
