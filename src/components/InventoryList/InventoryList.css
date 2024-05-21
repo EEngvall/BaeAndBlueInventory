@@ -1,0 +1,29 @@
+.inventory-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 20px;
+  padding: 20px;
+  justify-content: center; /* Center the grid items */
+  margin: auto;
+}
+
+
+
+.inventory-item {
+  flex: 1 1 200px; /* Adjust the basis for item width */
+  /* Add more styling for the item if needed */
+}
+
+/* For larger screens */
+@media (min-width: 768px) {
+  .inventory-list {
+    grid-template-columns: repeat(2, 1fr); /* Fix to 2 columns on larger screens */
+  }
+}
+
+/* For smaller screens (e.g., mobile devices) */
+@media (max-width: 767px) {
+  .inventory-list {
+    grid-template-columns: 1fr; /* Single column on small screens */
+  }
+}

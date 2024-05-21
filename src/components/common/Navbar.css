@@ -1,0 +1,61 @@
+.navbar ul {
+  list-style: none;
+  display: flex;
+  margin: 0; /* Removes default margin */
+  padding: 0; /* Removes default padding */
+}
+
+.navbar li {
+  margin-right: 1em; /* Space between links */
+}
+.navbar li:last-child {
+  margin-right: 0; /* No margin on the right of the last link */
+}
+
+.navbar a {
+  text-decoration: none;
+  color: inherit;
+}
+.navbar button {
+  background: none;
+  border: none;
+  color: inherit; /* Inherit color from navbar */
+  cursor: pointer;
+  /* Other button styles */
+}
+
+/* Navbar.css */
+.light-mode {
+  --text-color: #000;
+  --background-color: #fff;
+  text-decoration: none;
+  
+}
+
+.dark-mode {
+  --text-color: #fff;
+  --background-color: #333;
+
+  
+}
+
+.navbar {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  display: flex;
+  justify-content: space-between; /* Aligns children with space between */
+  align-items: center; /* Aligns children vertically */
+  padding: 0.5em 1em; /* Add some padding for aesthetics */
+  /* Other navbar styles */
+}
+
+.light-mode .navbar a {
+  color: #000; /* Dark text for light background */
+  text-decoration: none;
+}
+
+.dark-mode .navbar a {
+  color: #fff; /* Light text for dark background */
+  text-decoration: none;
+}
+
