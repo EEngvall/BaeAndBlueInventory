@@ -1,7 +1,12 @@
+// src/components/AddItemForm.js
+
 import React, { useState } from "react";
 import axios from "axios";
+import { useAuth } from "../../Context/AuthContext";
+import { Timestamp } from "firebase/firestore"; // Ensure this import is correct
 
 const AddItemForm = ({ onAddItem }) => {
+  const { user } = useAuth(); // Access the authenticated user
   const [newItem, setNewItem] = useState({
     name: "",
     imageUrl: "",
@@ -86,6 +91,8 @@ const AddItemForm = ({ onAddItem }) => {
           ? parseInt(newItem.replacedCount, 10)
           : "NULL",
       inventoryLocation: newItem.inventoryLocation || "NULL",
+      addedBy: user.email, // Add user's email
+      timestamp: Timestamp.now().toDate(), // Add current timestamp
     };
 
     try {

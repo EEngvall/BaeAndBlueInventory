@@ -2,9 +2,10 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import InventoryList from "../components/InventoryList/InventoryList";
 import Navbar from "../components/common/Navbar";
-import Home from "../components/common/Home"; // Make sure this import is correct
+import Home from "../components/common/Home"; // Ensure this import is correct
+import ProtectedRoute from "../components/common/ProtectedRoute";
+import Auth from "../components/auth/Auth";
 import "bootstrap/dist/css/bootstrap.min.css";
-// Other imports
 
 const App = () => {
   return (
@@ -12,9 +13,11 @@ const App = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/inventory" element={<InventoryList />} />
-
-        {/* Add other routes here */}
+        <Route path="/auth" element={<Auth />} />
+        <Route
+          path="/inventory"
+          element={<ProtectedRoute component={<InventoryList />} />}
+        />
       </Routes>
     </Router>
   );

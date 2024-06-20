@@ -5,7 +5,8 @@ const InventoryListItem = ({ item, onEdit }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showEventIDs, setShowEventIDs] = useState(false);
 
-  const toggleExpanded = () => {
+  const toggleExpanded = (e) => {
+    e.stopPropagation(); // Prevent event bubbling
     setIsExpanded(!isExpanded);
   };
 
@@ -14,7 +15,8 @@ const InventoryListItem = ({ item, onEdit }) => {
     return new Date(dateString).toLocaleDateString("en-US", options);
   };
 
-  const toggleEventIDs = () => {
+  const toggleEventIDs = (e) => {
+    e.stopPropagation(); // Prevent event bubbling
     setShowEventIDs(!showEventIDs);
   };
 
@@ -93,7 +95,13 @@ const InventoryListItem = ({ item, onEdit }) => {
                 </tr>
               </tbody>
             </table>
-            <Button variant="secondary" onClick={() => onEdit(item)}>
+            <Button
+              variant="secondary"
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit(item);
+              }}
+            >
               Edit
             </Button>
           </div>
@@ -102,4 +110,5 @@ const InventoryListItem = ({ item, onEdit }) => {
     </Row>
   );
 };
+
 export default InventoryListItem;

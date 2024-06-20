@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 
 const EditItemForm = ({ item, onEditItem, onClose, onDeleteItem }) => {
   const [editedItem, setEditedItem] = useState({
@@ -42,16 +41,11 @@ const EditItemForm = ({ item, onEditItem, onClose, onDeleteItem }) => {
     };
     onEditItem(updatedItem);
     onClose(); // Close the modal after submitting
-    // Optionally reset form or close modal after submission
   };
 
-  const handleDelete = async () => {
-    try {
-      onDeleteItem(item.id);
-      onClose(); // Close the modal after deletion
-    } catch (error) {
-      console.error("Error deleting item:", error);
-    }
+  const handleDelete = () => {
+    onDeleteItem(item.id);
+    onClose(); // Close the modal after deletion
   };
 
   return (
@@ -165,12 +159,12 @@ const EditItemForm = ({ item, onEditItem, onClose, onDeleteItem }) => {
         />
       </div>
       {/* Add other inputs for imageUrl, associatedEventID, etc., similar to above */}
-      <button className="btn btn-outline-success" type="submit">
+      <button className="btn btn-outline-success me-2" type="submit">
         Update Item
       </button>
       <button
         type="button"
-        className="btn btn-outline-danger"
+        className="btn btn-outline-danger m-2"
         onClick={handleDelete}
       >
         Delete Item

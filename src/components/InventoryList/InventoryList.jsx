@@ -65,10 +65,17 @@ const InventoryList = () => {
         `${apiUrl}/${updatedItem.id}`,
         updatedItem,
       );
-      const updatedItems = items.map((item) =>
-        item.id === response.data.id ? response.data : item,
-      );
-      setItems(updatedItems); // Update the state with the modified list
+      console.log("API response data:", response.data); // Debugging: log API response
+
+      // Use a functional state update to ensure the new state is based on the previous state
+      setItems((prevItems) => {
+        const updatedItems = prevItems.map((item) =>
+          item.id === response.data.id ? response.data : item,
+        );
+        console.log("Updated items array:", updatedItems); // Debugging: log updated items array
+        return updatedItems;
+      });
+
       setToastMessage("Item updated successfully");
       setToastType("Item Updated!");
       setShowToast(true);
@@ -83,7 +90,7 @@ const InventoryList = () => {
   };
 
   const handleAddItem = (newItem) => {
-    setItems([...items, newItem]);
+    setItems((prevItems) => [...prevItems, newItem]);
     setToastMessage("Item added successfully");
     setToastType("Item Added!");
     setShowToast(true);
@@ -93,7 +100,7 @@ const InventoryList = () => {
   const handleDeleteItem = async (id) => {
     try {
       await axios.delete(`${apiUrl}/${id}`);
-      setItems(items.filter((item) => item.id !== id));
+      setItems((prevItems) => prevItems.filter((item) => item.id !== id));
       setToastMessage("Item deleted successfully");
       setToastType("Item Deleted!");
       setShowToast(true);
@@ -107,6 +114,7 @@ const InventoryList = () => {
     setCurrentPage(pageNumber);
   };
 
+  // Ensure filtered items are re-evaluated on state changes
   const filteredItems = items.filter((item) => {
     if (searchField === "cost") {
       const cost = parseFloat(item.cost);
@@ -203,7 +211,9 @@ const InventoryList = () => {
                 />
               ) : (
                 <FormControl
-                  placeholder={`Search by ${formatCamelCaseToReadable(searchField)}...`}
+                  placeholder={`Search by ${formatCamelCaseToReadable(
+                    searchField,
+                  )}...`}
                   onChange={handleSearchChange}
                 />
               )}
