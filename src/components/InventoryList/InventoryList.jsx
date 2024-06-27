@@ -11,6 +11,7 @@ import {
   Modal,
   Button,
 } from "react-bootstrap";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import InventoryListItem from "./InventoryListItem";
 import AddItemForm from "../Item/AddItemForm";
@@ -21,6 +22,9 @@ import "./InventoryList.css"; // Import the CSS file
 const ITEMS_PER_PAGE = 10;
 
 const InventoryList = () => {
+  const location = useLocation(); // Get the current location object
+  const queryParams = new URLSearchParams(location.search); // Parse the query parameters
+  const initialLocation = queryParams.get("location") || ""; // Get the 'location' parameter
   const [items, setItems] = useState([]); // Initialize with an empty array
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -36,8 +40,10 @@ const InventoryList = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [toastType, setToastType] = useState("");
+  const [filterLocation, setFilterLocation] = useState(initialLocation);
 
   const apiUrl = "https://server.baeandblue.com/api/items"; // Your API URL
+  const navigate = useNavigate(); // Add useNavigate for navigation
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -114,23 +120,42 @@ const InventoryList = () => {
     setCurrentPage(pageNumber);
   };
 
+  const handleLocationChange = (e) => {
+    setFilterLocation(e.target.value);
+    setCurrentPage(1); // Reset to first page on new location filter
+  };
+
+  const clearFilters = () => {
+    setFilterLocation("");
+    setSearchQuery("");
+    setSearchField("name");
+    setCostRange({ min: "", max: "" });
+    setReplacementRange({ min: "", max: "" });
+    navigate("/inventory"); // Reset URL parameters
+  };
+
   // Ensure filtered items are re-evaluated on state changes
   const filteredItems = items.filter((item) => {
-    if (searchField === "cost") {
-      const cost = parseFloat(item.cost);
-      const minCost = costRange.min ? parseFloat(costRange.min) : -Infinity;
-      const maxCost = costRange.max ? parseFloat(costRange.max) : Infinity;
-      return cost >= minCost && cost <= maxCost;
-    } else if (searchField === "replacedCount") {
-      const replacedCount = parseInt(item.replacedCount, 10);
-      const minReplacement = replacementRange.min
-        ? parseInt(replacementRange.min, 10)
-        : -Infinity;
-      return replacedCount >= minReplacement;
-    } else {
-      const itemField = item[searchField]?.toString().toLowerCase();
-      return itemField && itemField.includes(searchQuery);
-    }
+    const matchesSearchQuery =
+      searchField === "cost"
+        ? parseFloat(item.cost) >=
+            (costRange.min ? parseFloat(costRange.min) : -Infinity) &&
+          parseFloat(item.cost) <=
+            (costRange.max ? parseFloat(costRange.max) : Infinity)
+        : searchField === "replacedCount"
+          ? parseInt(item.replacedCount, 10) >=
+            (replacementRange.min
+              ? parseInt(replacementRange.min, 10)
+              : -Infinity)
+          : item[searchField]?.toString().toLowerCase().includes(searchQuery);
+
+    const matchesLocation = filterLocation
+      ? item.inventoryLocation
+          ?.toLowerCase()
+          .includes(filterLocation.toLowerCase())
+      : true;
+
+    return matchesSearchQuery && matchesLocation;
   });
 
   const formatCamelCaseToReadable = (str) => {
@@ -209,17 +234,38 @@ const InventoryList = () => {
                   onChange={(e) => setReplacementRange({ min: e.target.value })}
                   type="number"
                 />
+              ) : searchField === "inventoryLocation" ? (
+                <FormControl
+                  placeholder="Filter by Location"
+                  value={filterLocation}
+                  onChange={handleLocationChange}
+                />
               ) : (
                 <FormControl
-                  placeholder={`Search by ${formatCamelCaseToReadable(
-                    searchField,
-                  )}...`}
+                  placeholder={`Search by ${formatCamelCaseToReadable(searchField)}...`}
                   onChange={handleSearchChange}
                 />
               )}
             </InputGroup>
           </Col>
         </Row>
+
+        {filterLocation && (
+          <Row className="mb-4">
+            <Col>
+              <div>
+                <strong>Currently Filtering by Location:</strong>{" "}
+                {filterLocation}
+                <Button
+                  className="btn btn-sm btn-danger ms-3"
+                  onClick={clearFilters}
+                >
+                  Clear
+                </Button>
+              </div>
+            </Col>
+          </Row>
+        )}
 
         <Row>
           {currentItems.map((item) => (

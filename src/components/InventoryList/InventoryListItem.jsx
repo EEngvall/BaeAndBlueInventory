@@ -1,9 +1,17 @@
 import React, { useState } from "react";
-import { Row, Col, Button } from "react-bootstrap";
+import { Row, Col, Button, Modal } from "react-bootstrap";
+import QRCodeGenerator from "../Utils/QRCodeGenerator";
 
 const InventoryListItem = ({ item, onEdit }) => {
+  const [showQRModal, setShowQRModal] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [showEventIDs, setShowEventIDs] = useState(false);
+
+  const handleShowQRModal = () => setShowQRModal(true);
+  const handleCloseQRModal = () => setShowQRModal(false);
+
+  const baseUrl = "https://baeandblue.com/inventory";
+  const qrCodeUrl = `${baseUrl}?location=${encodeURIComponent(item.inventoryLocation)}`;
 
   const toggleExpanded = (e) => {
     e.stopPropagation(); // Prevent event bubbling
@@ -104,6 +112,26 @@ const InventoryListItem = ({ item, onEdit }) => {
             >
               Edit
             </Button>
+            <Button className="m-2 btn btn-info" onClick={handleShowQRModal}>
+              Generate QR Code
+            </Button>
+            <Modal show={showQRModal} onHide={handleCloseQRModal}>
+              <Modal.Header closeButton>
+                <Modal.Title>QR Code for {item.name}</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <QRCodeGenerator url={qrCodeUrl} />
+                <p>
+                  Scan this QR code to view items at location:{" "}
+                  {item.inventoryLocation}
+                </p>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleCloseQRModal}>
+                  Close
+                </Button>
+              </Modal.Footer>
+            </Modal>
           </div>
         )}
       </Col>
