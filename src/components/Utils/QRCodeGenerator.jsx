@@ -37,7 +37,7 @@ const QRCodeGenerator = ({ url }) => {
   };
 
   return (
-    <div ref={qrRef}>
+    <div className="text-center" ref={qrRef}>
       <QRCode value={url} size={128} />
       <div>
         <button className="btn btn-success btn-sm" onClick={downloadQR}>

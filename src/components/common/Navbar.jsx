@@ -48,13 +48,15 @@ const MyNavbar = () => {
               Home
             </Nav.Link>
 
-            <Nav.Link
-              as={Link}
-              to="/inventory"
-              onClick={() => setExpanded(false)}
-            >
-              Inventory List
-            </Nav.Link>
+            {user && (
+              <Nav.Link
+                as={Link}
+                to="/inventory"
+                onClick={() => setExpanded(false)}
+              >
+                Inventory List
+              </Nav.Link>
+            )}
           </Nav>
           <Nav>
             {user ? (

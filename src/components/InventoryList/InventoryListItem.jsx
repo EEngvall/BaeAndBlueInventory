@@ -114,18 +114,20 @@ const InventoryListItem = ({ item, onEdit }) => {
               Edit
             </Button>
             <Button className="m-2 btn btn-info" onClick={handleShowQRModal}>
-              Generate Location QR
+              View Location QR
             </Button>
             <Link to={`/inventory/${item.id}`}>
               <Button className="btn btn-primary">View Details</Button>
             </Link>
             <Modal show={showQRModal} onHide={handleCloseQRModal}>
               <Modal.Header closeButton>
-                <Modal.Title>QR Code for {item.name}</Modal.Title>
+                <Modal.Title className="ms-auto">
+                  QR Code for {item.name}
+                </Modal.Title>
               </Modal.Header>
               <Modal.Body>
                 <QRCodeGenerator url={qrCodeUrl} />
-                <p>
+                <p className="text-center">
                   Scan this QR code to view items at location:{" "}
                   {item.inventoryLocation}
                 </p>
