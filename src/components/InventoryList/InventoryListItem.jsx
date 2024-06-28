@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Row, Col, Button, Modal } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import QRCodeGenerator from "../Utils/QRCodeGenerator";
 
 const InventoryListItem = ({ item, onEdit }) => {
@@ -115,6 +116,9 @@ const InventoryListItem = ({ item, onEdit }) => {
             <Button className="m-2 btn btn-info" onClick={handleShowQRModal}>
               Generate QR Code
             </Button>
+            <Link to={`/inventory/${item.id}`}>
+              <Button className="btn btn-primary">View Details</Button>
+            </Link>
             <Modal show={showQRModal} onHide={handleCloseQRModal}>
               <Modal.Header closeButton>
                 <Modal.Title>QR Code for {item.name}</Modal.Title>

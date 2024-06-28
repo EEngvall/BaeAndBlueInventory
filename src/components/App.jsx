@@ -5,6 +5,7 @@ import Navbar from "../components/common/Navbar";
 import Home from "../components/common/Home"; // Ensure this import is correct
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import Auth from "../components/auth/Auth";
+import ItemDetail from "../components/Item/ItemDetail";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const App = () => {
@@ -18,6 +19,7 @@ const App = () => {
           path="/inventory"
           element={<ProtectedRoute component={<InventoryList />} />}
         />
+        <Route path="/inventory/:itemID" element={<ItemDetail />} />
       </Routes>
     </Router>
   );
