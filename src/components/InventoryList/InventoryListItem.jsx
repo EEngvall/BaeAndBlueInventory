@@ -114,7 +114,7 @@ const InventoryListItem = ({ item, onEdit }) => {
               Edit
             </Button>
             <Button className="m-2 btn btn-info" onClick={handleShowQRModal}>
-              Generate QR Code
+              Generate Location QR
             </Button>
             <Link to={`/inventory/${item.id}`}>
               <Button className="btn btn-primary">View Details</Button>

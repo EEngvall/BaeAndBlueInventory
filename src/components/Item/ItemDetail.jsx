@@ -24,6 +24,7 @@ const ItemDetail = () => {
   const handleCloseQRModal = () => setShowQRModal(false);
   const handleShowEditModal = () => setShowEditModal(true);
   const handleCloseEditModal = () => setShowEditModal(false);
+  const [showEventIDs, setShowEventIDs] = useState(false);
 
   const baseUrl = "https://baeandblue.com/inventory";
   const qrCodeUrl = `${baseUrl}/${itemID}`;
@@ -48,6 +49,25 @@ const ItemDetail = () => {
   const getFormattedDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString("en-US", options);
+  };
+
+  const toggleEventIDs = (e) => {
+    e.stopPropagation(); // Prevent event bubbling
+    setShowEventIDs(!showEventIDs);
+  };
+
+  const renderEventIDsSubTable = (eventIDs) => {
+    return (
+      <table className="table">
+        <tbody>
+          {eventIDs.map((id) => (
+            <tr key={id}>
+              <td>{id}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
   };
 
   const handleEditItem = async (updatedItem) => {
@@ -82,7 +102,7 @@ const ItemDetail = () => {
         <Col md={8}>
           <Card>
             <Card.Header>
-              <h2>{item.name}</h2>
+              <h2 className="text-center">{item.name}</h2>
             </Card.Header>
             <Card.Body>
               <Card.Img
@@ -98,7 +118,15 @@ const ItemDetail = () => {
                 <strong>ID:</strong> {item.id}
               </Card.Text>
               <Card.Text>
-                <strong>Associated Events:</strong> {item.associatedEventID}
+                <strong>Associated Events:</strong>
+                <button
+                  className=" ms-2 btn btn-outline-dark btn-sm"
+                  onClick={toggleEventIDs}
+                  style={{ marginBottom: "5px" }}
+                >
+                  {showEventIDs ? "Hide IDs" : "Show IDs"}
+                </button>
+                {showEventIDs && renderEventIDsSubTable(item.associatedEventID)}
               </Card.Text>
               <Card.Text>
                 <strong>Total On Hand:</strong> {item.totalOnHand}
@@ -134,7 +162,7 @@ const ItemDetail = () => {
                 Go Back
               </Button>
               <Button className="m-2 btn btn-info" onClick={handleShowQRModal}>
-                Generate QR Code
+                Generate Item QR
               </Button>
             </Card.Body>
           </Card>
